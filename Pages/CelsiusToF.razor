@@ -1,0 +1,50 @@
+﻿@page "/celsiustofahrenheit"
+@using System.Globalization
+
+<MudContainer Style="padding: 20px; max-width: 500px; margin-top: 125px">
+    <MudCard>
+        <MudCardHeader>
+            <MudText Typo="Typo.h5">Conversor de Temperatura</MudText>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudForm @ref="form">
+                <MudSelect @bind-Value="SelectedConversion" Label="Tipo de Conversão" Required="true">
+                    <MudSelectItem Value="CtoF">Celsius para Fahrenheit</MudSelectItem>
+                    <MudSelectItem Value="FtoC">Fahrenheit para Celsius</MudSelectItem>
+                </MudSelect>
+                <MudTextField @bind-Value="InputTemperature" Label="Temperatura" Variant="Variant.Text" Type="number" Required="true" />
+                <MudText Typo="Typo.body1" Style="margin-top: 20px;">
+                    Resultado: @ResultTemperature
+                </MudText>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ConvertTemperature" Class="mt-4">Converter</MudButton>
+            </MudForm>
+        </MudCardContent>
+    </MudCard>
+</MudContainer>
+
+@code {
+
+    private MudForm? form;
+    string FtoC = "FtoC";
+    string CtoF = "CtoF";
+
+    private string SelectedConversion = "CtoF";
+
+
+    private double InputTemperature;
+
+    private string ResultTemperature = "";
+
+    private void ConvertTemperature()
+    {
+        if (SelectedConversion == "CtoF")
+        {
+            ResultTemperature = $"{InputTemperature * 9 / 5 + 32:F2} °F";
+        }
+        else if (SelectedConversion == "FtoC")
+        {
+            ResultTemperature = $"{(InputTemperature - 32) * 5 / 9:F2} °C";
+        }
+    }
+}
+

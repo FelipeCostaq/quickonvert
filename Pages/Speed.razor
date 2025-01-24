@@ -1,0 +1,93 @@
+﻿@page "/speed"
+
+@using System.Globalization
+<style>
+    div#speed {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+    }
+</style>
+<div id="speed">
+    <MudPaper Class="pa-4" Elevation="4" Style="max-width:500px; margin-top: 125px">
+        <MudText Typo="Typo.h4" Class="mb-4">Conversor de Velocidades</MudText>
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="InputValue" Label="Valor" Variant="Variant.Filled" />
+            </MudItem>
+
+
+            <MudItem xs="12" md="6">
+                <MudSelect T="string" @bind-Value="FromUnit" Label="De" Variant="Variant.Filled">
+                    @foreach (var unit in Units)
+                    {
+                        <MudSelectItem Value="@unit">@unit</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+
+
+            <MudItem xs="12" md="6">
+                <MudSelect T="string" @bind-Value="ToUnit" Label="Para" Variant="Variant.Filled">
+                    @foreach (var unit in Units)
+                    {
+                        <MudSelectItem Value="@unit">@unit</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+
+
+            <MudItem xs="12" md="6">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Convert">Converter</MudButton>
+            </MudItem>
+
+
+            <MudItem xs="12">
+                <MudText Typo="Typo.h5" Class="mt-4">Resultado: @Result</MudText>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+</div>
+
+@code {
+    private string? InputValue { get; set; }
+    private string FromUnit { get; set; } = "m/s";
+    private string ToUnit { get; set; } = "Km/h";
+    private string Result { get; set; } = "Aguardando cálculo...";
+
+    private readonly List<string> Units = new() { "m/s", "Km/h", "Mph", "Nó" };
+
+    private void Convert()
+    {
+        if (double.TryParse(InputValue, NumberStyles.Float, CultureInfo.InvariantCulture, out double value))
+        {
+
+            double valueInKmh = FromUnit switch
+            {
+                "m/s" => value * 3.6,
+                "Km/h" => value,
+                "Mph" => value * 1.609,
+                "Nó" => value * 1.852,
+                _ => 0
+            };
+
+
+            double convertedValue = ToUnit switch
+            {
+                "m/s" => valueInKmh / 3.6,
+                "Km/h" => valueInKmh,
+                "Mph" => valueInKmh / 1.609,
+                "Nó" => valueInKmh / 1.852,
+                _ => 0
+            };
+
+            Result = $"{convertedValue:F3} {ToUnit}";
+        }
+        else
+        {
+            Result = "Valor inválido!";
+        }
+    }
+}

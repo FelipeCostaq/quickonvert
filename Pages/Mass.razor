@@ -1,0 +1,93 @@
+﻿@page "/mass"
+
+@using System.Globalization
+<style>
+    div#mass {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+    }
+</style>
+<div id="mass">
+    <MudPaper Class="pa-4" Elevation="4" Style="max-width:500px; margin-top: 125px">
+        <MudText Typo="Typo.h4" Class="mb-4">Conversor de Massas</MudText>
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="InputValue" Label="Valor" Variant="Variant.Filled"/>
+            </MudItem>
+
+
+            <MudItem xs="12" md="6">
+                <MudSelect T="string" @bind-Value="FromUnit" Label="De" Variant="Variant.Filled">
+                    @foreach (var unit in Units)
+                    {
+                        <MudSelectItem Value="@unit">@unit</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+
+
+            <MudItem xs="12" md="6">
+                <MudSelect T="string" @bind-Value="ToUnit" Label="Para" Variant="Variant.Filled">
+                    @foreach (var unit in Units)
+                    {
+                        <MudSelectItem Value="@unit">@unit</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+
+
+            <MudItem xs="12" md="6">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Convert">Converter</MudButton>
+            </MudItem>
+
+
+            <MudItem xs="12">
+                <MudText Typo="Typo.h5" Class="mt-4">Resultado: @Result</MudText>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+</div>
+
+@code {
+    private string? InputValue { get; set; }
+    private string FromUnit { get; set; } = "Gramas";
+    private string ToUnit { get; set; } = "Quilogramas";
+    private string Result { get; set; } = "Aguardando cálculo...";
+
+    private readonly List<string> Units = new() { "Gramas", "Quilogramas", "Libras", "Onças" };
+
+    private void Convert()
+    {
+        if (double.TryParse(InputValue, NumberStyles.Float, CultureInfo.InvariantCulture, out double value))
+        {
+
+            double valueInKilogramas = FromUnit switch
+            {
+                "Gramas" => value / 1000,
+                "Quilogramas" => value,
+                "Libras" => value / 2.20462,
+                "Onças" => value / 35.274,
+                _ => 0
+            };
+
+
+            double convertedValue = ToUnit switch
+            {
+                "Gramas" => valueInKilogramas * 1000,
+                "Quilogramas" => valueInKilogramas,
+                "Libras" => valueInKilogramas * 2.20462,
+                "Onças" => valueInKilogramas / 35.274,
+                _ => 0
+            };
+
+            Result = $"{convertedValue:F3} {ToUnit}";
+        }
+        else
+        {
+            Result = "Valor inválido!";
+        }
+    }
+}

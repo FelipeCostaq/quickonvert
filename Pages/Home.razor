@@ -1,0 +1,45 @@
+﻿@page "/"
+<link rel="stylesheet" href="css/home.css" />
+
+
+
+<PageTitle>QuickConvert</PageTitle>
+@if(_drawerOpen == true)
+{
+    <div id="container">
+        <div id="content">
+            <MudCard Style="width:400px; height: 190px">
+                <MudCardContent>
+                    <MudText Align="Align.Center" Typo="Typo.h2">Bem-vindo</MudText>
+                    <MudText Align="Align.Center" Typo="Typo.subtitle1">Use o menu ao lado para navegar entre as conversões.</MudText>
+                    <div class="button-container">
+                        <MudIconButton Target="_blank" Href="https://github.com/FelipeCostaQ" aria-label="github" Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit"></MudIconButton>
+                    </div>
+                </MudCardContent>
+            </MudCard>
+        </div>
+    </div>
+}
+else
+{
+    <div id="containerFalse">
+        <div id="contentFalse">
+            <MudCard Style="width:500px; height: 190px">
+                <MudCardContent>
+                    <MudText Align="Align.Center" Typo="Typo.h2">Bem-vindo</MudText>
+                    <MudText Align="Align.Center" Typo="Typo.subtitle1">Use o menu ao lado para navegar entre as conversões.</MudText>
+                    <div class="button-container">
+                        <MudIconButton Target="_blank" Href="https://github.com/FelipeCostaQ" aria-label="github" Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit"></MudIconButton>
+                    </div>
+                </MudCardContent>
+            </MudCard>
+        </div>
+    </div>
+}
+
+@code {
+    [CascadingParameter]
+    public bool _drawerOpen { get; set; }
+
+    
+}

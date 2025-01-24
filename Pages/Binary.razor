@@ -1,0 +1,45 @@
+﻿@page "/binary"
+
+<style>
+    div#binary {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+    }
+</style>
+<div id="binary">
+    <MudContainer Style="margin-top:160px; max-width:500px">
+        <MudPaper Class="pa-4">
+            <MudText Typo="Typo.h5" Align="Align.Center">Criptografador de Texto para Binário</MudText>
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="InputText" Label="Digite sua mensagem" Variant="Variant.Text" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="EncodeToBinary">
+                        Criptografar
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+            <MudDivider Class="my-4" />
+            <MudText Typo="Typo.h6">Mensagem em Binário:</MudText>
+            <MudText Typo="Typo.body1">@EncodedBinary</MudText>
+        </MudPaper>
+    </MudContainer>
+</div>
+@code {
+    private string InputText = string.Empty;
+    private string EncodedBinary = string.Empty;
+
+    private void EncodeToBinary()
+    {
+        EncodedBinary = string.Empty;
+
+        foreach (var c in InputText)
+        {
+            EncodedBinary += Convert.ToString(c, 2).PadLeft(8, '0') + " ";
+        }
+    }
+}

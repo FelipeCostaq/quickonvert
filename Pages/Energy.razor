@@ -1,0 +1,105 @@
+﻿@page "/energy"
+
+@using System.Globalization
+<style>
+    div#energy {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+    }
+</style>
+<div id="energy">
+    <MudPaper Class="pa-4" Elevation="4" Style="max-width:500px; margin-top: 125px">
+        <MudText Typo="Typo.h4" Class="mb-4">Conversor de Energias</MudText>
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="InputValue" Label="Valor" Variant="Variant.Filled" />
+            </MudItem>
+
+
+            <MudItem xs="12" md="6">
+                <MudSelect T="string" @bind-Value="FromUnit" Label="De" Variant="Variant.Filled">
+                    @foreach (var unit in Units)
+                    {
+                        <MudSelectItem Value="@unit">@unit</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+
+
+            <MudItem xs="12" md="6">
+                <MudSelect T="string" @bind-Value="ToUnit" Label="Para" Variant="Variant.Filled">
+                    @foreach (var unit in Units)
+                    {
+                        <MudSelectItem Value="@unit">@unit</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+
+
+            <MudItem xs="12" md="6">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Convert">Converter</MudButton>
+            </MudItem>
+
+
+            <MudItem xs="12">
+                <MudText Typo="Typo.h5" Class="mt-4">Resultado: @Result</MudText>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+</div>
+
+@code {
+    private string? InputValue { get; set; }
+    private string FromUnit { get; set; } = "Caloria (cal)";
+    private string ToUnit { get; set; } = "Quilowatt-hora (kWh)";
+    private string Result { get; set; } = "Aguardando cálculo...";
+
+    private readonly List<string> Units = new() 
+    {
+        "Joule (J)",
+        "Quilojoule (kJ)",
+        "Caloria (cal)",
+        "Quilocaloria (kcal)",
+        "Quilowatt-hora (kWh)",
+        "Eletronvolt (eV)",
+    };
+
+    private void Convert()
+    {
+        if (double.TryParse(InputValue, NumberStyles.Float, CultureInfo.InvariantCulture, out double value))
+        {
+
+            double valueInJoules = FromUnit switch
+            {
+                "Joule (J)" => value,
+                "Quilojoule (kJ)" => value * 1_000,
+                "Caloria (cal)" => value * 4.184,
+                "Quilocaloria (kcal)" => value * 4_184,
+                "Quilowatt-hora (kWh)" => value * 3_600_000,
+                "Eletronvolt (eV)" => value * 1.602e-19,
+                _ => 0
+            };
+
+
+            double convertedValue = ToUnit switch
+            {
+                "Joule (J)" => valueInJoules,
+                "Quilojoule (kJ)" => valueInJoules / 1_000,
+                "Caloria (cal)" => valueInJoules / 4.184,
+                "Quilocaloria (kcal)" => valueInJoules / 4_184,
+                "Quilowatt-hora (kWh)" => valueInJoules / 3_600_000,
+                "Eletronvolt (eV)" => valueInJoules / 1.602e-19,
+                _ => 0
+            };
+
+            Result = $"{convertedValue:F3} {ToUnit}";
+        }
+        else
+        {
+            Result = "Valor inválido!";
+        }
+    }
+}

@@ -1,0 +1,94 @@
+﻿@page "/time"
+
+<style>
+    div#time {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+    }
+</style>
+
+<div id="time">
+    <MudContainer Style="max-width:500px; margin-top: 125px">
+        <MudPaper Class="pa-4">
+            <MudText Typo="Typo.h5" Align="Align.Center">Conversor de Tempo</MudText>
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="InputValue" Label="Valor" Variant="Variant.Text" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudSelect T="string" Label="Unidade de origem" @bind-Value="SelectedUnit">
+                        @foreach (var unit in Units)
+                        {
+                            <MudSelectItem Value="@unit">@unit</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+            </MudGrid>
+            <MudDivider Class="my-4" />
+            <MudTable Items="ConvertedValues" Dense="true" Bordered="true">
+                <HeaderContent>
+                    <MudTh>Unidade</MudTh>
+                    <MudTh>Valor</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd>@context.Key</MudTd>
+                    <MudTd>@context.Value</MudTd>
+                </RowTemplate>
+            </MudTable>
+            <MudItem xs="12" md="12">
+                <MudButton Style="margin-top:15px" Variant="Variant.Filled" Color="Color.Primary" OnClick="UpdateConvertedValues">
+                    Converter
+                </MudButton>
+            </MudItem>
+        </MudPaper>
+    </MudContainer>
+</div>
+@code {
+    private string InputValue = "0";
+    private string SelectedUnit = "Segundos";
+
+    private readonly List<string> Units = new() { "Horas", "Minutos", "Segundos", "Milissegundos" };
+
+    private Dictionary<string, double> ConvertedValues = new();
+
+    private void UpdateConvertedValues()
+    {
+        if (double.TryParse(InputValue, out var value))
+        {
+            double seconds = SelectedUnit switch
+            {
+                "Horas" => value * 3600,
+                "Minutos" => value * 60,
+                "Segundos" => value,
+                "Milissegundos" => value / 1000,
+                _ => 0
+            };
+
+            ConvertedValues = new Dictionary<string, double>
+            {
+                { "Horas", seconds / 3600 },
+                { "Minutos", seconds / 60 },
+                { "Segundos", seconds },
+                { "Milissegundos", seconds * 1000 }
+            };
+        }
+        else
+        {
+            ConvertedValues = new Dictionary<string, double>
+            {
+                { "Horas", 0 },
+                { "Minutos", 0 },
+                { "Segundos", 0 },
+                { "Milissegundos", 0 }
+            };
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        UpdateConvertedValues();
+    }
+}

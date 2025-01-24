@@ -1,0 +1,25 @@
+﻿html {
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+div#content {
+    position: absolute;
+    top: 90%;
+    left: 50%;
+    transform: translate(-50%, 100%);
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+div#contentFalse {
+    position: absolute;
+    top: 90%;
+    left: 50%;
+    transform: translate(-50%, 100%);
+}
+
